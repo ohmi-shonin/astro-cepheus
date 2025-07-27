@@ -67,12 +67,11 @@ window.addEventListener('resize', () => {
 });
 </script>
 
-
-<!-- d3 & celestial.js を読み込み -->
+<!-- 必要なライブラリ読み込み -->
 <script src="https://cdn.jsdelivr.net/npm/d3@3"></script>
-<script src="https://ofrohn.github.io/files/celestial/celestial.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3-celestial@0.7.14/celestial.min.js"></script>
 
-<!-- 星図をオーバーレイする透明レイヤー -->
+<!-- 星図レイヤー -->
 <div id="celestial-map" style="
   position: absolute;
   top: 0;
@@ -87,7 +86,7 @@ window.addEventListener('resize', () => {
   Celestial.display({
     container: "celestial-map",
     width: window.innerWidth,
-    projection: "airy",  // ortho / mercator なども可
+    projection: "airy",  // ortho なども選べます
     datapath: "https://ofrohn.github.io/data/",
 
     background: { fill: "none", stroke: "none" },
