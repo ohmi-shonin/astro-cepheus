@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<title>Deep Zoom × Leaflet – 横幅フィット版</title>
+
+<link rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<style>
+  html,body,#viewer{margin:0;height:100%}
+</style>
+</head>
+<body>
+<div id="viewer"></div>
+
+<script>
+/* ------------ 画像実寸 & タイル設定 ---------------- */
+const tile = 512;
+const imgW = 22210;
+const imgH = 17032;
+const levels = Math.ceil(Math.log2(Math.max(imgW, imgH) / tile));   // 6
+
+/* ------------ マップ -------------------------------- */
+const map = L.map('viewer', {
+  crs : L.CRS.Simple,
+  minZoom : 1,                 // z=0 を封印
+  maxZoom : 4,
+  zoomSnap : 1,                // 端数ズーム禁止
+  bounceAtZoomLimits : false,
+  inertia : false,
+  scrollWheelZoom : false      // ホイールでズームアウト不可
+});
+
+/* ------------ 座標変換 ------------------------------ */
+const sw = map.unproject([0      , imgH], levels); // 左下
+const ne = map.unproject([imgW   ,     0], levels); // 右上
+const bounds = new L.LatLngBounds(sw, ne);
+
+/* ------------ タイルレイヤ -------------------------- */
+L.tileLayer('./tiles/{z}/{y}/{x}.jpg', {   // 必要なら x/y を入れ替え
+  tileSize      : tile,
+  noWrap        : true,
+  bounds        : bounds,
+  maxNativeZoom : 4
+}).addTo(map);
+
+/* ------------ 横幅フィット関数 ---------------------- */
+function fitWidth () {
+  const viewportW = map.getSize().x;         // ビューポート幅(px)
+  // 画像を何倍に縮小すれば入るか → 2^δ = imgW / viewportW
+  const delta = Math.log2(imgW / viewportW);
+  // levels - δ が“ぴったり幅”のズーム段（整数に丸め）
+  let bestZoom = Math.round(levels - delta);
+  // 下限 1 でクランプ
+  bestZoom = Math.max(map.getMinZoom(), Math.min(bestZoom, map.getMaxZoom()));
+  // 画像中心にセット
+  map.setView([-(imgH/2), imgW/2], bestZoom, {animate:false});
+}
+
+/* 初期表示 & リサイズ追従 ---------------------------- */
+fitWidth();
+map.setMaxBounds(bounds);               // 外へドラッグ不可
+window.addEventListener('resize', () => {
+  fitWidth();
+});
+</script>
+</body>
+</html>
