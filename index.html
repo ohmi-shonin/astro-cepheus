@@ -83,6 +83,33 @@ window.addEventListener('resize', () => {
 "></div>
 
 <script>
+  Celestial.settings = {
+    width: window.innerWidth,
+    projection: "airy",
+    datapath: "https://ofrohn.github.io/data/",
+
+    background: { fill: "none", stroke: "none" },
+
+    stars: {
+      show: true,
+      limit: 6,
+    },
+
+    constellations: {
+      names: true,
+      lines: true,
+    },
+
+    mw: { show: false },
+    planets: { show: false },
+    gridEquatorial: { show: false },
+    lines: { graticule: false }
+  };
+
+  Celestial.display(Celestial.settings);
+</script>
+
+<script>
   Celestial.display({
     container: "celestial-map",
     width: window.innerWidth,
