@@ -8,6 +8,10 @@
       href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
+<!-- leaflet-minimap 用 CSS/JS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet-minimap/dist/Control.MiniMap.min.css">
+<script src="https://unpkg.com/leaflet-minimap/dist/Control.MiniMap.min.js"></script>
+
 <style>
   html,body,#viewer{margin:0;height:100%}
 </style>
@@ -44,6 +48,22 @@ L.tileLayer('./tiles/{z}/{y}/{x}.jpg', {   // 必要なら x/y を入れ替え
   noWrap        : true,
   bounds        : bounds,
   maxNativeZoom : 4
+}).addTo(map);
+
+// leaflet-minimap ナビゲーター（Photoshop風）
+const miniMapLayer = L.tileLayer('tiles/{z}/{y}/{x}.png', {
+    minZoom: 0,
+    maxZoom: 4,
+    noWrap: true,
+    bounds: [[0, 0], [imgHeight, imgWidth]]
+});
+
+const miniMap = new L.Control.MiniMap(miniMapLayer, {
+    toggleDisplay: true,
+    minimized: false,
+    aimingRectOptions: { color: "#f00", weight: 1, clickable: false },
+    width: 150,
+    height: 150
 }).addTo(map);
 
 /* ------------ 横幅フィット関数 ---------------------- */
