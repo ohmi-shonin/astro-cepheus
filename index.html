@@ -26,7 +26,7 @@ const levels = Math.ceil(Math.log2(Math.max(imgW, imgH) / tile));   // 6
 const map = L.map('viewer', {
   crs : L.CRS.Simple,
   minZoom : 1,                 // z=0 を封印
-  maxZoom : levels,
+  maxZoom : 4,
   zoomSnap : 1,                // 端数ズーム禁止
   bounceAtZoomLimits : false,
   inertia : false,
